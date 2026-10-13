@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Do I need Making Tax Digital for Income Tax? Free checker and deadlines</title>
+<meta name="description" content="Free, private checker: find out if and when you need Making Tax Digital for Income Tax, and see your quarterly update deadlines. Works in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%8A%3C/text%3E%3C/svg%3E">
+<!--
+  Rules used on this page (checked against GOV.UK on 13 October 2026):
+  - Thresholds: https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax
+    over £50,000 in 2024-25 → from 6 April 2026; over £30,000 in 2025-26 → 6 April 2027; over £20,000 in 2026-27 → 6 April 2028.
+  - Qualifying income: https://www.gov.uk/guidance/work-out-your-qualifying-income-for-making-tax-digital-for-income-tax
+    total self-employment + property income before expenses; other income (PAYE, dividends, pensions, partnership share) excluded.
+  - Update periods and deadlines, penalty easement: https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates
+  - Tax return deadline: https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/submit-your-tax-return
+  Nothing is sent anywhere: all calculation happens in this page.
+-->
+<style>
+  :root {
+    --bg: #faf6ef; --card: #fffdf9; --ink: #1f1a14; --muted: #6b6257;
+    --line: #e6dccd; --accent: #c8531d; --accent-ink: #fff;
+    --ok: #2f6b3a; --ok-bg: #edf6ee; --warn: #8a4b0f; --warn-bg: #fdf1e3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #15130f; --card: #1e1b16; --ink: #f2ece2; --muted: #b0a696; --line: #362f26;
+            --accent: #f08a4b; --accent-ink: #1a120b; --ok: #9fd3a8; --ok-bg: #1d2a1f; --warn: #f3c48f; --warn-bg: #2d2216; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 64px; }
+  a { color: var(--accent); }
+  .crumb { font-size: 0.9rem; color: var(--muted); text-decoration: none; }
+  h1 { font-size: clamp(1.7rem, 4.5vw, 2.3rem); line-height: 1.2; margin: 12px 0 8px; }
+  .lede { color: var(--muted); margin: 0 0 24px; }
+  section.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; margin-bottom: 20px; }
+  h2 { font-size: 1.2rem; margin: 0 0 6px; }
+  .help { color: var(--muted); font-size: 0.92rem; margin: 0 0 14px; }
+  fieldset { border: 0; padding: 0; margin: 0 0 12px; }
+  legend { font-weight: 600; margin-bottom: 6px; }
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); gap: 10px 14px; }
+  label { display: block; font-size: 0.92rem; font-weight: 600; margin-bottom: 4px; }
+  input, select { width: 100%; font: inherit; padding: 9px 10px; border: 2px solid var(--line); border-radius: 8px;
+                  background: var(--bg); color: var(--ink); }
+  input:focus-visible, select:focus-visible, a:focus-visible, button:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .result { margin-top: 14px; padding: 12px 14px; border-radius: 10px; border-left: 4px solid var(--muted); background: var(--bg); }
+  .result.ok { border-color: var(--ok); background: var(--ok-bg); }
+  .result.warn { border-color: var(--warn); background: var(--warn-bg); }
+  .result strong { display: block; font-size: 1.05rem; margin-bottom: 2px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.95rem; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 0.85rem; color: var(--muted); font-weight: 600; }
+  .note { font-size: 0.9rem; color: var(--muted); margin: 10px 0 0; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
+  .cta p { margin: 0; flex: 1 1 260px; }
+  a.btn { background: var(--accent); color: var(--accent-ink); text-decoration: none; padding: 10px 16px;
+          border-radius: 8px; font-weight: 600; white-space: nowrap; }
+  .disclaimer { font-size: 0.88rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; margin-top: 28px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+</style>
+</head>
+<body>
+<main>
+  <a class="crumb" href="../../">← quillfox</a>
+  <h1>Do I need Making Tax Digital for Income Tax?</h1>
+  <p class="lede">A free, private checker for UK sole traders and landlords: find out when you need to start, then see your quarterly deadlines. Nothing you type leaves this page.</p>
+
+  <section class="card" aria-labelledby="need-h">
+    <h2 id="need-h">1. When do I need to start?</h2>
+    <p class="help">Enter your <strong>qualifying income</strong>: self-employment plus property income <em>before expenses</em> (turnover). Leave out wages (PAYE), dividends, pensions and partnership profit shares. For a jointly owned property, enter your share only.</p>
+    <fieldset>
+      <legend>Tax year 2024 to 2025</legend>
+      <div class="row">
+        <div><label for="se24">Self-employment income (£)</label><input id="se24" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+        <div><label for="pr24">Property income (£)</label><input id="pr24" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Tax year 2025 to 2026 <span class="help">(estimate if not finished)</span></legend>
+      <div class="row">
+        <div><label for="se25">Self-employment income (£)</label><input id="se25" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+        <div><label for="pr25">Property income (£)</label><input id="pr25" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Tax year 2026 to 2027 <span class="help">(estimate)</span></legend>
+      <div class="row">
+        <div><label for="se26">Self-employment income (£)</label><input id="se26" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+        <div><label for="pr26">Property income (£)</label><input id="pr26" inputmode="decimal" autocomplete="off" placeholder="0"></div>
+      </div>
+    </fieldset>
+    <div id="need-result" class="result" role="status" aria-live="polite"></div>
+    <p class="note">Thresholds from GOV.UK: more than £50,000 in 2024-25 → start 6 April 2026; more than £30,000 in 2025-26 → 6 April 2027; more than £20,000 in 2026-27 → 6 April 2028. Some people are exempt (for example if digitally excluded). <a href="https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax">Check on GOV.UK</a>.</p>
+  </section>
+
+  <section class="card" aria-labelledby="dl-h">
+    <h2 id="dl-h">2. My quarterly deadlines</h2>
+    <p class="help">Each quarterly update covers from the start of the tax year to the end of the period. Use calendar periods if your accounting period ends on 31 March.</p>
+    <div class="row">
+      <div>
+        <label for="year">Tax year</label>
+        <select id="year"></select>
+      </div>
+      <div>
+        <label for="basis">Update periods</label>
+        <select id="basis">
+          <option value="standard">Standard (6 April to 5 April)</option>
+          <option value="calendar">Calendar (1 April to 31 March)</option>
+        </select>
+      </div>
+    </div>
+    <table aria-describedby="dl-h">
+      <thead><tr><th scope="col">Update</th><th scope="col">Covers</th><th scope="col">Send by</th></tr></thead>
+      <tbody id="dl-body"></tbody>
+    </table>
+    <p class="note" id="penalty-note"></p>
+  </section>
+
+  <section class="card cta" aria-labelledby="cta-h">
+    <p><strong id="cta-h">Keeping your records in a spreadsheet?</strong><br>
+    The quillfox records workbook logs income and expenses in HMRC's own categories, works out your cumulative quarterly totals, tracks mileage at the right flat rate and lists your deadlines, ready to link to bridging software.</p>
+    <span class="btn" aria-disabled="true" style="opacity:.6;cursor:default">Records spreadsheet: coming soon</span>
+  </section>
+
+  <p class="disclaimer">General information, not tax advice. Based on GOV.UK guidance checked in October 2026, and rules can change. To send quarterly updates you need HMRC-recognised software (a spreadsheet needs <a href="https://www.gov.uk/guidance/choose-the-right-software-for-making-tax-digital-for-income-tax">bridging software</a>). Check <a href="https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax">GOV.UK</a> or speak to an accountant about your situation.</p>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var gbp = new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP", minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  function fmt(d) { return d.getDate() + " " + MONTHS[d.getMonth()] + " " + d.getFullYear(); }
+  function num(id) {
+    var raw = document.getElementById(id).value.replace(/[£,\s]/g, "");
+    if (raw === "") return { v: 0, ok: true, blank: true };
+    var v = Number(raw);
+    return { v: v, ok: isFinite(v) && v >= 0, blank: false };
+  }
+
+  // --- 1. When do I need to start? (thresholds: income must be MORE THAN the figure)
+  var RULES = [
+    { year: "2024 to 2025", se: "se24", pr: "pr24", limit: 50000, start: "6 April 2026" },
+    { year: "2025 to 2026", se: "se25", pr: "pr25", limit: 30000, start: "6 April 2027" },
+    { year: "2026 to 2027", se: "se26", pr: "pr26", limit: 20000, start: "6 April 2028" }
+  ];
+  var out = document.getElementById("need-result");
+  function need() {
+    var anyInput = false;
+    for (var i = 0; i < RULES.length; i++) {
+      var a = num(RULES[i].se), b = num(RULES[i].pr);
+      if (!a.ok || !b.ok) {
+        out.className = "result warn";
+        out.innerHTML = "<strong>Please check your figures</strong>Enter amounts as positive numbers, for example 42500.";
+        return;
+      }
+      if (!a.blank || !b.blank) anyInput = true;
+      RULES[i].total = a.v + b.v;
+    }
+    if (!anyInput) {
+      out.className = "result";
+      out.innerHTML = "<strong>Enter your income above</strong>Your result appears here as you type.";
+      return;
+    }
+    for (var j = 0; j < RULES.length; j++) {
+      var r = RULES[j];
+      if (r.total > r.limit) {
+        out.className = "result ok";
+        out.innerHTML = "<strong>You'll need it from " + r.start + "</strong>" +
+          "Your qualifying income for " + r.year + " (" + gbp.format(r.total) + ") is more than " + gbp.format(r.limit) + "." +
+          (j === 0 ? " If you haven't signed up yet, GOV.UK says you can still do so now." : "") +
+          " HMRC normally writes to you, but it's your responsibility to check.";
+        return;
+      }
+    }
+    out.className = "result";
+    out.innerHTML = "<strong>Not on the announced timetable yet</strong>" +
+      "Your figures are not above the thresholds for 2024-25 (£50,000), 2025-26 (£30,000) or 2026-27 (£20,000). " +
+      "You still file a normal Self Assessment return. Check again each year, and see GOV.UK for future changes.";
+  }
+  RULES.forEach(function (r) {
+    document.getElementById(r.se).addEventListener("input", need);
+    document.getElementById(r.pr).addEventListener("input", need);
+  });
+  need();
+
+  // --- 2. Deadlines
+  var yearSel = document.getElementById("year"), basisSel = document.getElementById("basis");
+  var today = new Date();
+  var currentStart = (today.getMonth() > 3 || (today.getMonth() === 3 && today.getDate() >= 6)) ? today.getFullYear() : today.getFullYear() - 1;
+  for (var y = 2026; y <= 2030; y++) {
+    var o = document.createElement("option");
+    o.value = y; o.textContent = y + " to " + (y + 1);
+    if (y === Math.max(2026, currentStart)) o.selected = true;
+    yearSel.appendChild(o);
+  }
+  function deadlines() {
+    var y = Number(yearSel.value), cal = basisSel.value === "calendar";
+    var start = cal ? new Date(y, 3, 1) : new Date(y, 3, 6);
+    var ends = cal ? [new Date(y, 5, 30), new Date(y, 8, 30), new Date(y, 11, 31), new Date(y + 1, 2, 31)]
+                   : [new Date(y, 6, 5), new Date(y, 9, 5), new Date(y + 1, 0, 5), new Date(y + 1, 3, 5)];
+    var due = [new Date(y, 7, 7), new Date(y, 10, 7), new Date(y + 1, 1, 7), new Date(y + 1, 4, 7)];
+    var body = document.getElementById("dl-body");
+    body.textContent = "";
+    for (var q = 0; q < 4; q++) {
+      var tr = document.createElement("tr");
+      [ "Quarter " + (q + 1), fmt(start) + " to " + fmt(ends[q]), fmt(due[q]) ].forEach(function (t, k) {
+        var td = document.createElement(k === 0 ? "th" : "td");
+        if (k === 0) td.scope = "row";
+        td.textContent = t;
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    }
+    var tr2 = document.createElement("tr");
+    var th = document.createElement("th"); th.scope = "row"; th.textContent = "Tax return";
+    var td1 = document.createElement("td"); td1.textContent = "Whole tax year";
+    var td2 = document.createElement("td"); td2.textContent = fmt(new Date(y + 2, 0, 31));
+    tr2.appendChild(th); tr2.appendChild(td1); tr2.appendChild(td2); body.appendChild(tr2);
+    document.getElementById("penalty-note").textContent = (y === 2026)
+      ? "For 2026 to 2027, HMRC will not apply penalty points for late quarterly updates (late tax returns still get points)."
+      : "Late quarterly updates get a penalty point; 4 points means a £200 penalty (if you're required to use MTD).";
+  }
+  yearSel.addEventListener("change", deadlines);
+  basisSel.addEventListener("change", deadlines);
+  deadlines();
+})();
+</script>
+</body>
+</html>
