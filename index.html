@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>quillfox: small tools, puzzles &amp; vector art</title>
+<meta name="description" content="quillfox makes small, carefully built tools, puzzle books and vector art. Free tools to try in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%8A%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #faf6ef; --card: #fffdf9; --ink: #1f1a14; --muted: #6b6257;
+    --line: #e6dccd; --accent: #c8531d; --accent-ink: #fff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #15130f; --card: #1e1b16; --ink: #f2ece2; --muted: #b0a696; --line: #362f26; --accent: #f08a4b; --accent-ink: #1a120b; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; }
+  main { max-width: 880px; margin: 0 auto; padding: 48px 16px 64px; }
+  header { margin-bottom: 40px; }
+  .mark { font-size: 3rem; line-height: 1; }
+  h1 { font-size: clamp(2rem, 5vw, 2.8rem); margin: 12px 0 8px; letter-spacing: -0.01em; }
+  .lede { font-size: 1.15rem; color: var(--muted); max-width: 40rem; margin: 0; }
+  h2 { font-size: 1.25rem; margin: 40px 0 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; }
+  .card h3 { margin: 0 0 6px; font-size: 1.05rem; }
+  .card p { margin: 0 0 14px; color: var(--muted); font-size: 0.95rem; flex: 1; }
+  .tag { display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+         color: var(--muted); margin-bottom: 8px; }
+  a.btn { align-self: flex-start; background: var(--accent); color: var(--accent-ink); text-decoration: none;
+          padding: 8px 14px; border-radius: 8px; font-weight: 600; font-size: 0.95rem; }
+  a.btn:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .soon { color: var(--muted); font-size: 0.9rem; font-style: italic; }
+  footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.9rem; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="mark" aria-hidden="true">🦊</div>
+    <h1>quillfox</h1>
+    <p class="lede">Small, carefully built things: browser tools that just work, puzzle books with every answer verified, and clean vector art.</p>
+  </header>
+
+  <section aria-labelledby="tools">
+    <h2 id="tools">Free tools</h2>
+    <div class="grid">
+      <article class="card">
+        <span class="tag">Browser tool</span>
+        <h3>Pocket Morse Nameplate</h3>
+        <p>Type a word and see it laid out in International Morse code, one clear group per letter. Works offline.</p>
+        <a class="btn" href="tools/morse/">Open</a>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="shop">
+    <h2 id="shop">Coming soon</h2>
+    <div class="grid">
+      <article class="card">
+        <span class="tag">Books</span>
+        <h3>Large-print puzzle books</h3>
+        <p>Themed word searches and sudoku with a gentle difficulty ladder. Every grid is machine-checked for a single solution.</p>
+        <span class="soon">In production</span>
+      </article>
+      <article class="card">
+        <span class="tag">Templates</span>
+        <h3>Quarterly records for sole traders</h3>
+        <p>A tidy spreadsheet for keeping digital records by quarter, with a free calculator.</p>
+        <span class="soon">In production</span>
+      </article>
+      <article class="card">
+        <span class="tag">Vector art</span>
+        <h3>Winter icon set &amp; cut files</h3>
+        <p>Consistent line icons and Cricut-ready SVG designs for the holidays.</p>
+        <span class="soon">In production</span>
+      </article>
+    </div>
+  </section>
+
+  <footer>
+    <p>quillfox is a small studio that builds with the help of AI. Every file is checked before it ships. Corrections and ideas are welcome via <a href="https://github.com/lanternquill">GitHub</a>.</p>
+  </footer>
+</main>
+</body>
+</html>

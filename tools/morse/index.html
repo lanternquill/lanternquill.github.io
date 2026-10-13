@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pocket Morse Nameplate</title>
+<!--
+  Alphabet source: International Morse code, Recommendation ITU-R M.1677-1 (10/2009),
+  Part I, section 1.1.1 "Letters":
+  https://www.itu.int/rec/R-REC-M.1677-1-200910-I/en
+  The A-Z table below transcribes that section. Dot = ".", dash = "-".
+  A .-     B -...   C -.-.   D -..    E .      F ..-.   G --.    H ....
+  I ..     J .---   K -.-    L .-..   M --     N -.     O ---    P .--.
+  Q --.-   R .-.    S ...    T -      U ..-    V ...-   W .--    X -..-
+  Y -.--   Z --..
+  This file is a visual reference only. It makes no network requests.
+-->
+<style>
+  :root {
+    --bg: #f6f3ec;
+    --card: #fffdf8;
+    --ink: #1d1b16;
+    --muted: #5b564b;
+    --line: #d8d1c2;
+    --accent: #1f4e5f;
+    --error-bg: #fff1ef;
+    --error-ink: #8a1c10;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #16191b;
+      --card: #1f2427;
+      --ink: #f0ede6;
+      --muted: #b3ada1;
+      --line: #3a4247;
+      --accent: #8fc3d4;
+      --error-bg: #3a1d19;
+      --error-ink: #ffb4a8;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+  main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 48px;
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; letter-spacing: 0.01em; }
+  h2 { font-size: 1.1rem; margin: 0 0 8px; }
+  .lede { margin: 0 0 20px; color: var(--muted); }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  label { display: block; font-weight: 600; margin-bottom: 6px; }
+  .hint { display: block; color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+  input[type="text"] {
+    width: 100%;
+    max-width: 22rem;
+    font: inherit;
+    font-size: 1.25rem;
+    letter-spacing: 0.08em;
+    padding: 10px 12px;
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--ink);
+  }
+  input[type="text"][aria-invalid="true"] { border-color: var(--error-ink); }
+  input[type="text"]:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .status { margin-top: 12px; min-height: 1.5em; }
+  .status.error {
+    background: var(--error-bg);
+    color: var(--error-ink);
+    border-left: 4px solid var(--error-ink);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  .word {
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    margin: 0 0 12px;
+    overflow-wrap: anywhere;
+  }
+  .plate {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 120px), 1fr));
+    gap: 10px;
+  }
+  .group {
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 8px 8px;
+    text-align: center;
+    background: var(--bg);
+  }
+  .letter { display: block; font-size: 1.6rem; font-weight: 700; line-height: 1.1; }
+  .symbols {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    min-height: 22px;
+    margin: 8px 0 6px;
+  }
+  /* Dots are round and dashes are long bars: distinct by shape, not by colour. */
+  .dot, .dash { display: inline-block; height: 12px; background: var(--ink); }
+  .dot { width: 12px; border-radius: 50%; }
+  .dash { width: 32px; border-radius: 3px; }
+  .text-code {
+    display: block;
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    font-size: 1.05rem;
+    letter-spacing: 0.15em;
+  }
+  .text-name { display: block; color: var(--muted); font-size: 0.8rem; }
+  .examples { margin: 0; padding-left: 1.2rem; }
+  .examples code {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+    letter-spacing: 0.1em;
+  }
+  .note { color: var(--muted); font-size: 0.95rem; margin: 8px 0 0; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Pocket Morse Nameplate</h1>
+  <p class="lede">Type a word to see it as International Morse code, one labelled group per letter.</p>
+
+  <section class="card" aria-labelledby="input-heading">
+    <h2 id="input-heading" class="sr-only">Word</h2>
+    <label for="word-input">Word (1 to 12 letters, A to Z only)</label>
+    <input id="word-input" type="text" value="HELLO"
+           autocomplete="off" autocapitalize="characters" spellcheck="false"
+           aria-describedby="word-hint word-status">
+    <span id="word-hint" class="hint">Letters only: no spaces, numbers or punctuation. Lowercase is shown as uppercase.</span>
+    <div id="word-status" class="status" role="status" aria-live="polite"></div>
+  </section>
+
+  <section class="card" aria-labelledby="result-heading">
+    <h2 id="result-heading">Nameplate</h2>
+    <div id="result"></div>
+  </section>
+
+  <section class="card" aria-labelledby="examples-heading">
+    <h2 id="examples-heading">Examples</h2>
+    <ul class="examples">
+      <li>A = <code>.-</code></li>
+      <li>B = <code>-...</code></li>
+      <li>SOS = <code>... / --- / ...</code></li>
+    </ul>
+    <p class="note">In the SOS example, <code>/</code> separates one letter's code from the next. A dot is written <code>.</code> and a dash is written <code>-</code>.</p>
+    <p class="note">This page is a visual reference only. It is not a transmitter or an emergency signalling device.</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  // International Morse code letters A-Z, per ITU-R M.1677-1 section 1.1.1 (see source comment in head).
+  var MORSE = {
+    A: ".-",   B: "-...", C: "-.-.", D: "-..",  E: ".",    F: "..-.",
+    G: "--.",  H: "....", I: "..",   J: ".---", K: "-.-",  L: ".-..",
+    M: "--",   N: "-.",   O: "---",  P: ".--.", Q: "--.-", R: ".-.",
+    S: "...",  T: "-",    U: "..-",  V: "...-", W: ".--",  X: "-..-",
+    Y: "-.--", Z: "--.."
+  };
+  var MAX_LEN = 12;
+
+  var input = document.getElementById("word-input");
+  var status = document.getElementById("word-status");
+  var result = document.getElementById("result");
+
+  // Returns an error message, or "" when the raw value is valid.
+  function validate(raw) {
+    if (raw.length === 0) {
+      return "Please type a word: at least 1 letter from A to Z.";
+    }
+    var bad = [];
+    for (var i = 0; i < raw.length; i++) {
+      var ch = raw.charAt(i);
+      if (!/^[A-Za-z]$/.test(ch) && bad.indexOf(ch) === -1) bad.push(ch);
+    }
+    if (bad.length) {
+      var shown = bad.map(function (c) {
+        return c === " " ? "space" : "“" + c + "”";
+      }).join(", ");
+      return "Only the letters A to Z can be encoded. Please remove: " + shown + ".";
+    }
+    if (raw.length > MAX_LEN) {
+      return "That word has " + raw.length + " letters. Please use at most " + MAX_LEN + ".";
+    }
+    return "";
+  }
+
+  function symbolName(code) {
+    return code.split("").map(function (s) { return s === "." ? "dot" : "dash"; }).join(" ");
+  }
+
+  function renderGroup(letter) {
+    var code = MORSE[letter];
+    var li = document.createElement("li");
+    li.className = "group";
+    li.setAttribute("aria-label", letter + ": " + symbolName(code) + " (" + code + ")");
+
+    var l = document.createElement("span");
+    l.className = "letter";
+    l.setAttribute("aria-hidden", "true");
+    l.textContent = letter;
+
+    var shapes = document.createElement("span");
+    shapes.className = "symbols";
+    shapes.setAttribute("aria-hidden", "true");
+    for (var i = 0; i < code.length; i++) {
+      var s = document.createElement("span");
+      s.className = code.charAt(i) === "." ? "dot" : "dash";
+      shapes.appendChild(s);
+    }
+
+    var text = document.createElement("span");
+    text.className = "text-code";
+    text.setAttribute("aria-hidden", "true");
+    text.textContent = code;
+
+    var name = document.createElement("span");
+    name.className = "text-name";
+    name.setAttribute("aria-hidden", "true");
+    name.textContent = symbolName(code);
+
+    li.appendChild(l);
+    li.appendChild(shapes);
+    li.appendChild(text);
+    li.appendChild(name);
+    return li;
+  }
+
+  function update() {
+    var raw = input.value;
+    var err = validate(raw);
+    result.textContent = ""; // always clear the previous result first
+
+    if (err) {
+      input.setAttribute("aria-invalid", "true");
+      status.className = "status error";
+      status.textContent = err;
+      var p = document.createElement("p");
+      p.className = "note";
+      p.textContent = "No code shown until the word is valid.";
+      result.appendChild(p);
+      return;
+    }
+
+    input.removeAttribute("aria-invalid");
+    var word = raw.toUpperCase();
+    var codes = word.split("").map(function (c) { return MORSE[c]; });
+
+    var w = document.createElement("p");
+    w.className = "word";
+    w.textContent = word;
+
+    var plain = document.createElement("p");
+    plain.className = "text-code";
+    plain.textContent = codes.join(" / ");
+
+    var list = document.createElement("ol");
+    list.className = "plate";
+    list.setAttribute("aria-label", "Morse code for " + word + ", one group per letter");
+    word.split("").forEach(function (c) { list.appendChild(renderGroup(c)); });
+
+    result.appendChild(w);
+    result.appendChild(list);
+    result.appendChild(plain);
+
+    status.className = "status";
+    status.textContent = word + " in Morse: " + codes.join(" / ");
+  }
+
+  input.addEventListener("input", update);
+  update();
+})();
+</script>
+</body>
+</html>
