@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>quillfox: authorisation code</title>
+<style>
+  body{margin:0;background:#faf6ef;color:#1f1a14;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+  main{max-width:640px;margin:0 auto;padding:40px 16px}
+  code{display:block;word-break:break-all;background:#fff;border:1px solid #e6dccd;border-radius:8px;padding:12px;font-size:.95rem}
+  button{margin-top:10px;font:inherit;padding:8px 14px;border-radius:8px;border:0;background:#c8531d;color:#fff;cursor:pointer}
+  .muted{color:#6b6257;font-size:.9rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>🦊 Authorisation received</h1>
+  <p id="msg">Copy the text below and paste it back into the chat.</p>
+  <code id="out">(waiting…)</code>
+  <button id="copy" type="button">Copy</button>
+  <p class="muted">This code only works together with a secret held by the app that requested it, and it expires within minutes. Nothing is stored or sent anywhere by this page.</p>
+</main>
+<script>
+  var p = new URLSearchParams(location.search);
+  var out = document.getElementById('out');
+  if (p.get('error')) {
+    document.getElementById('msg').textContent = 'Authorisation was not granted:';
+    out.textContent = p.get('error') + (p.get('error_description') ? ' (' + p.get('error_description') + ')' : '');
+  } else if (p.get('code')) {
+    out.textContent = 'code=' + p.get('code') + '&state=' + (p.get('state') || '');
+  } else {
+    out.textContent = 'No code in this URL.';
+  }
+  document.getElementById('copy').onclick = function () {
+    navigator.clipboard && navigator.clipboard.writeText(out.textContent);
+    this.textContent = 'Copied';
+  };
+</script>
+</body>
+</html>
